@@ -14,4 +14,12 @@ public class ToDoEssential {
     private Category category;
     private LocalDate postDate;
     private DayOfWeek dayOfWeek;
+
+    public ToDoEssential(String title, String contents, Category category, LocalDate postDate, DayOfWeek dayOfWeek) {
+        this.title = title;
+        this.contents = contents;
+        this.category = category;
+        this.postDate = postDate;
+        this.dayOfWeek = dayOfWeek;
+    }
 }
