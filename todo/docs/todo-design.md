@@ -21,4 +21,4 @@
 4. 이후 RDB를 사용하여 도메인을 영속화 한다.
 
 #### 요구사항에 따른 클래스 / Bean 다이어그램
-![class-diagram](./img/todoClass.png)
+<img src="./img/todoClass.png">
