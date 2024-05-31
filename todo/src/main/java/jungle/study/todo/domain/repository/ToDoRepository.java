@@ -9,9 +9,9 @@ import org.springframework.stereotype.Repository;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@Repository
+@Component
 public class ToDoRepository {
-    AtomicInteger todoSeq = new AtomicInteger(1);
+    public AtomicInteger todoSeq = new AtomicInteger(1);
     ConcurrentHashMap<AtomicInteger,ToDo> todoDB = new ConcurrentHashMap<>();
     public ToDo createToDo(ToDo toDo){
         AtomicInteger currentSeq = todoSeq;

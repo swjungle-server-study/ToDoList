@@ -28,7 +28,7 @@ public class ToDoCommandServiceImpl implements ToDoCommandService {
                         createToDoReq.contents(),
                         createToDoReq.category(),
                         now,
-                        DayOfWeek.of(now.getDayOfMonth()))
+                        now.getDayOfWeek())
         );
 
         ToDo todo = toDoRepository.createToDo(toDo);
