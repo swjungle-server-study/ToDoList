@@ -1,7 +1,7 @@
 package jungle.study.todo.global.exception;
 
 import jakarta.validation.ConstraintViolationException;
-import jungle.study.todo.domain.exception.NotFoundException;
+import jungle.study.todo.domain.exception.ToDoNotFoundException;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -19,7 +19,7 @@ public enum ErrorCode {
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "지원하지 않는 HTTP 메서드입니다.", Set.of(HttpRequestMethodNotSupportedException.class)),
 
     //TODO
-    TODO_NOT_FOUND(HttpStatus.BAD_REQUEST, "투두가 존재하지 않습니다", Set.of(NotFoundException.class));
+    TODO_NOT_FOUND(HttpStatus.BAD_REQUEST, "투두가 존재하지 않습니다", Set.of(ToDoNotFoundException.class));
 
     private final HttpStatusCode status;
     private final String code;

@@ -3,6 +3,7 @@ package jungle.study.todo.application.impl;
 import jungle.study.todo.application.service.ToDoCommandService;
 import jungle.study.todo.domain.ToDo;
 import jungle.study.todo.domain.ToDoEssential;
+import jungle.study.todo.domain.exception.ToDoNotFoundException;
 import jungle.study.todo.domain.repository.ToDoRepository;
 import jungle.study.todo.presentation.dto.request.CreateToDoReq;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,7 @@ public class ToDoCommandServiceImpl implements ToDoCommandService {
 
         ToDo todo = toDoRepository.createToDo(toDo);
         if (todo == null) {
-             //TODO:예외처리
+            throw new ToDoNotFoundException();
         }
 
         return todo.getUuid();
