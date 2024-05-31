@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@Component
+@Repository
 public class ToDoRepository {
     public AtomicInteger todoSeq = new AtomicInteger(1);
     ConcurrentHashMap<AtomicInteger,ToDo> todoDB = new ConcurrentHashMap<>();
