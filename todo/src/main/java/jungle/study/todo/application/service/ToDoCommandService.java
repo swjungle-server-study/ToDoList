@@ -10,4 +10,6 @@ public interface ToDoCommandService {
     UUID createToDo(CreateToDoReq createToDoReq);
 
     ToDo modifyToDoEssential(ModifyToDoReq modifyToDoReq);
+
+    void deleteToDo(UUID uuid);
 }

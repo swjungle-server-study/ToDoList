@@ -47,4 +47,13 @@ public class ToDoRepository {
         return toDo;
     }
 
+    public void deleteToDo(UUID uuid) {
+        for (Integer k : todoDB.keySet()) {
+            if (todoDB.get(k).getUuid().equals(uuid)) {
+                todoDB.remove(k);
+                return;
+            }
+        }
+        throw new ToDoNotFoundException();
+    }
 }

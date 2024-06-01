@@ -43,4 +43,9 @@ public class ToDoCommandServiceImpl implements ToDoCommandService {
     public ToDo modifyToDoEssential(ModifyToDoReq modifyToDoReq) {
         return toDoRepository.updateToDo(modifyToDoReq.uuid(), modifyToDoReq.title(), modifyToDoReq.contents(), modifyToDoReq.category());
     }
+
+    @Override
+    public void deleteToDo(UUID uuid) {
+        toDoRepository.deleteToDo(uuid);
+    }
 }
