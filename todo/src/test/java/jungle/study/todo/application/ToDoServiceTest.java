@@ -8,6 +8,7 @@ import jungle.study.todo.domain.ToDo;
 import jungle.study.todo.domain.ToDoEssential;
 import jungle.study.todo.domain.exception.ToDoNotFoundException;
 import jungle.study.todo.domain.repository.ToDoRepository;
+import jungle.study.todo.presentation.dto.request.CreateToDoReq;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,8 +16,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -72,6 +75,19 @@ public class ToDoServiceTest {
         assertThatThrownBy(()->toDoQueryService.findTodoByUuid(uuid))
                 .isInstanceOf(ToDoNotFoundException.class);
     }
+
+    @Test
+    @DisplayName("투두 전체 조회 API")
+    public void findAllToDo(){
+        //given
+        Integer LOOP_SIZE = 5;
+        IntStream.range(0,LOOP_SIZE).forEach(i->toDoCommandService.createToDo(new CreateToDoReq("title","contents",Category.DONE)));
+        //when
+        List<ToDo> todos = toDoQueryService.findAllToDo();
+        //then
+        assertThat(todos.size()).isEqualTo(LOOP_SIZE);
+    }
+
 
     private ToDo basicToDoResponse(){
         LocalDate now = LocalDate.now();
