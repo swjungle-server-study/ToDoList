@@ -1,6 +1,8 @@
 package jungle.study.todo.presentation;
 
 import jungle.study.todo.application.service.ToDoCommandService;
+import jungle.study.todo.application.service.ToDoQueryService;
+import jungle.study.todo.domain.ToDo;
 import jungle.study.todo.global.dto.ResponseEnvelope;
 import jungle.study.todo.presentation.dto.request.CreateToDoReq;
 import jungle.study.todo.presentation.dto.response.ToDoUuidRes;
@@ -16,10 +18,17 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ToDoController {
     private final ToDoCommandService toDoCommandService;
+    private final ToDoQueryService toDoQueryService;
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEnvelope<?> createToDo(@RequestBody CreateToDoReq createToDoReq){
         UUID uuid = toDoCommandService.createToDo(createToDoReq);
         return ResponseEnvelope.of(new ToDoUuidRes(uuid));
+    }
+
+    @GetMapping("/{uuid}")
+    public ResponseEnvelope<?> findToDoByUuid(@PathVariable("uuid") UUID uuid){
+        ToDo todo = toDoQueryService.findTodoByUuid(uuid);
+        return ResponseEnvelope.of(todo);
     }
 }

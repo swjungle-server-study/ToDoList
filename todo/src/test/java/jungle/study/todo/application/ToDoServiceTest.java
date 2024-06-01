@@ -8,7 +8,6 @@ import jungle.study.todo.domain.ToDo;
 import jungle.study.todo.domain.ToDoEssential;
 import jungle.study.todo.domain.exception.ToDoNotFoundException;
 import jungle.study.todo.domain.repository.ToDoRepository;
-import jungle.study.todo.presentation.dto.request.TodoDetailReq;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,9 +57,8 @@ public class ToDoServiceTest {
         //given
         ToDo toDo = basicToDoResponse();
         ToDo createToDo = toDoRepository.createToDo(toDo);
-        TodoDetailReq todoDetailReq = new TodoDetailReq(createToDo.getUuid());
         //when
-        ToDo todo = toDoQueryService.findTodoByUuid(todoDetailReq);
+        ToDo todo = toDoQueryService.findTodoByUuid(createToDo.getUuid());
         //then
         assertThat(todo.getUuid()).isEqualTo(createToDo.getUuid());
     }
@@ -69,9 +67,9 @@ public class ToDoServiceTest {
     @DisplayName("투두 단건 조회 API Exception - ToDo 존재하지 않을 경우")
     public void findTodoByUuIdExceptionNotFound(){
         //given
-        TodoDetailReq todoDetailReq = new TodoDetailReq(UUID.randomUUID());
+        UUID uuid = UUID.randomUUID();
         //when, then
-        assertThatThrownBy(()->toDoQueryService.findTodoByUuid(todoDetailReq))
+        assertThatThrownBy(()->toDoQueryService.findTodoByUuid(uuid))
                 .isInstanceOf(ToDoNotFoundException.class);
     }
 
