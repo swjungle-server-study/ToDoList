@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,19 +30,19 @@ public class ToDoController {
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEnvelope<?> findToDoByUuid(@PathVariable("uuid") UUID uuid) {
+    public ResponseEnvelope<ToDo> findToDoByUuid(@PathVariable("uuid") UUID uuid) {
         ToDo todo = toDoQueryService.findTodoByUuid(uuid);
         return ResponseEnvelope.of(todo);
     }
 
     @GetMapping
-    public ResponseEnvelope<?> findAllTodos() {
+    public ResponseEnvelope<List<ToDo>> findAllTodos() {
         List<ToDo> todos = toDoQueryService.findAllToDo();
-        return ResponseEnvelope.of(todos);
+        return ResponseEnvelope.of(Collections.unmodifiableList(todos));
     }
 
     @PatchMapping
-    public ResponseEnvelope<?> modifyToDoEssential(@RequestBody ModifyToDoReq modifyToDoReq) {
+    public ResponseEnvelope<ToDo> modifyToDoEssential(@RequestBody ModifyToDoReq modifyToDoReq) {
         ToDo toDo = toDoCommandService.modifyToDoEssential(modifyToDoReq);
         return ResponseEnvelope.of(toDo);
     }
