@@ -89,7 +89,7 @@ public class ToDoServiceTest {
 
     @Test
     @DisplayName("투두 필수 값 수정 API")
-    public void modifyEssential() {
+    public void modifyToDoEssential() {
         //given
         CreateToDoReq createToDoReq = new CreateToDoReq("테스트1", "테스트1", Category.DOING);
         UUID uuid = toDoCommandService.createToDo(createToDoReq);
@@ -98,6 +98,19 @@ public class ToDoServiceTest {
         ToDo toDo = toDoCommandService.modifyToDoEssential(modifyToDoReq);
         //then
         assertThat(toDo.getToDoEssential().getTitle()).isEqualTo("테스트2");
+    }
+
+    @Test
+    @DisplayName("투두 삭제 API")
+    public void deleteToDo() {
+        //given
+        CreateToDoReq createToDoReq = new CreateToDoReq("test", "test", Category.DOING);
+        //when
+        UUID uuid = toDoCommandService.createToDo(createToDoReq);
+        toDoCommandService.deleteToDo(uuid);
+        //then
+        assertThatThrownBy(() -> toDoQueryService.findTodoByUuid(uuid))
+                .isInstanceOf(ToDoNotFoundException.class);
     }
 
 
