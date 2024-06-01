@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -19,5 +21,11 @@ public class ToDoRepository {
 
         todoSeq.incrementAndGet();
         return todoDB.get(currentSeq);
+    }
+
+    public Optional<ToDo> findByUuid(UUID uuid) {
+        return todoDB.values().stream()
+                .filter(toDo -> uuid.equals(toDo.getUuid()))
+                .findFirst();
     }
 }
