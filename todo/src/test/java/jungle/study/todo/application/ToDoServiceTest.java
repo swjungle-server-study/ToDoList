@@ -65,6 +65,16 @@ public class ToDoServiceTest {
         assertThat(todo.getUuid()).isEqualTo(createToDo.getUuid());
     }
 
+    @Test
+    @DisplayName("투두 단건 조회 API Exception - ToDo 존재하지 않을 경우")
+    public void findTodoByUuIdExceptionNotFound(){
+        //given
+        TodoDetailReq todoDetailReq = new TodoDetailReq(UUID.randomUUID());
+        //when, then
+        assertThatThrownBy(()->toDoQueryService.findTodoByUuid(todoDetailReq))
+                .isInstanceOf(ToDoNotFoundException.class);
+    }
+
     private ToDo basicToDoResponse(){
         LocalDate now = LocalDate.now();
         return new ToDo(UUID.randomUUID(),
