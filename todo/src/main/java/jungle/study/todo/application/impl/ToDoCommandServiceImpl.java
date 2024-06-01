@@ -6,10 +6,10 @@ import jungle.study.todo.domain.ToDoEssential;
 import jungle.study.todo.domain.exception.ToDoNotFoundException;
 import jungle.study.todo.domain.repository.ToDoRepository;
 import jungle.study.todo.presentation.dto.request.CreateToDoReq;
+import jungle.study.todo.presentation.dto.request.ModifyToDoReq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -37,5 +37,10 @@ public class ToDoCommandServiceImpl implements ToDoCommandService {
         }
 
         return todo.getUuid();
+    }
+
+    @Override
+    public ToDo modifyToDoEssential(ModifyToDoReq modifyToDoReq) {
+        return toDoRepository.updateToDo(modifyToDoReq.uuid(), modifyToDoReq.title(), modifyToDoReq.contents(), modifyToDoReq.category());
     }
 }
