@@ -9,15 +9,14 @@ import jungle.study.todo.domain.ToDoEssential;
 import jungle.study.todo.domain.exception.ToDoNotFoundException;
 import jungle.study.todo.domain.repository.ToDoRepository;
 import jungle.study.todo.presentation.dto.request.CreateToDoReq;
-import org.assertj.core.api.Assertions;
+import jungle.study.todo.presentation.dto.request.ModifyToDoReq;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
@@ -43,7 +42,7 @@ public class ToDoServiceTest {
 
     @Test
     @DisplayName("투두 단건 생성 API DB 연결")
-    public void createTodoConnectionOnRepository(){
+    public void createTodoConnectionOnRepository() {
         //given
         ToDo toDo = basicToDoResponse();
         //when
@@ -56,7 +55,7 @@ public class ToDoServiceTest {
 
     @Test
     @DisplayName("투두 단건 조회 API")
-    public void findTodoByUuId(){
+    public void findTodoByUuId() {
         //given
         ToDo toDo = basicToDoResponse();
         ToDo createToDo = toDoRepository.createToDo(toDo);
@@ -68,28 +67,41 @@ public class ToDoServiceTest {
 
     @Test
     @DisplayName("투두 단건 조회 API Exception - ToDo 존재하지 않을 경우")
-    public void findTodoByUuIdExceptionNotFound(){
+    public void findTodoByUuIdExceptionNotFound() {
         //given
         UUID uuid = UUID.randomUUID();
         //when, then
-        assertThatThrownBy(()->toDoQueryService.findTodoByUuid(uuid))
+        assertThatThrownBy(() -> toDoQueryService.findTodoByUuid(uuid))
                 .isInstanceOf(ToDoNotFoundException.class);
     }
 
     @Test
     @DisplayName("투두 전체 조회 API")
-    public void findAllToDo(){
+    public void findAllToDo() {
         //given
         Integer LOOP_SIZE = 5;
-        IntStream.range(0,LOOP_SIZE).forEach(i->toDoCommandService.createToDo(new CreateToDoReq("title","contents",Category.DONE)));
+        IntStream.range(0, LOOP_SIZE).forEach(i -> toDoCommandService.createToDo(new CreateToDoReq("title", "contents", Category.DONE)));
         //when
         List<ToDo> todos = toDoQueryService.findAllToDo();
         //then
         assertThat(todos.size()).isEqualTo(LOOP_SIZE);
     }
 
+    @Test
+    @DisplayName("투두 필수 값 수정 API")
+    public void modifyEssential() {
+        //given
+        CreateToDoReq createToDoReq = new CreateToDoReq("테스트1", "테스트1", Category.DOING);
+        UUID uuid = toDoCommandService.createToDo(createToDoReq);
+        ModifyToDoReq modifyToDoReq = new ModifyToDoReq(uuid, "테스트2", "테스트2", Category.DONE);
+        //when
+        ToDo toDo = toDoCommandService.modifyToDoEssential(modifyToDoReq);
+        //then
+        assertThat(toDo.getToDoEssential().getTitle()).isEqualTo("테스트2");
+    }
 
-    private ToDo basicToDoResponse(){
+
+    private ToDo basicToDoResponse() {
         LocalDate now = LocalDate.now();
         return new ToDo(UUID.randomUUID(),
                 new ToDoEssential(
