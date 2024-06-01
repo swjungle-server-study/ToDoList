@@ -31,8 +31,18 @@ public class ToDoServiceTest {
     @DisplayName("투두 단건 생성 API DB 연결")
     public void createTodoConnectionOnRepository(){
         //given
+        ToDo toDo = basicToDoResponse();
+        //when
+        ToDo createdToDo = toDoRepository.createToDo(toDo);
+
+        // then
+        assertNotNull(createdToDo);
+        assertEquals(2, toDoRepository.todoSeq.get());
+    }
+
+    private ToDo basicToDoResponse(){
         LocalDate now = LocalDate.now();
-        ToDo toDo = new ToDo(UUID.randomUUID(),
+        return new ToDo(UUID.randomUUID(),
                 new ToDoEssential(
                         "테스트 제목",
                         "테스트 내용",
@@ -40,11 +50,5 @@ public class ToDoServiceTest {
                         now,
                         now.getDayOfWeek())
         );
-        //when
-        ToDo createdToDo = toDoRepository.createToDo(toDo);
-
-        // then
-        assertNotNull(createdToDo);
-        assertEquals(2, toDoRepository.todoSeq.get());
     }
 }
