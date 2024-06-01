@@ -32,4 +32,10 @@ public class ToDoRepository {
                 .filter(toDo -> uuid.equals(toDo.getUuid()))
                 .findFirst();
     }
+
+    public List<ToDo> findAllToDo(){
+        return todoDB.values().stream()
+                .sorted(Comparator.comparing(todo -> todo.getToDoEssential().getPostDate(), Comparator.reverseOrder()))
+                .collect(Collectors.toList());
+    }
 }

@@ -7,7 +7,7 @@ import jungle.study.todo.domain.repository.ToDoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -19,5 +19,10 @@ public class ToDoQueryServiceImpl implements ToDoQueryService {
     public ToDo findTodoByUuid(UUID uuid) {
         ToDo todo = toDoRepository.findByUuid(uuid).orElseThrow(ToDoNotFoundException::new);
         return todo;
+    }
+
+    @Override
+    public List<ToDo> findAllToDo() {
+        return toDoRepository.findAllToDo();
     }
 }
