@@ -45,4 +45,10 @@ public class ToDoController {
         ToDo toDo = toDoCommandService.modifyToDoEssential(modifyToDoReq);
         return ResponseEnvelope.of(toDo);
     }
+
+    @DeleteMapping("/{uuid}")
+    public ResponseEnvelope<String> deleteToDo(@PathVariable UUID uuid) {
+        toDoCommandService.deleteToDo(uuid);
+        return ResponseEnvelope.of("delete todo");
+    }
 }
