@@ -1,15 +1,17 @@
 package jungle.study.todo.domain;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
 public class Todo {
-    @Setter
     private Long id;
     private String title;
     private String content;
     private boolean completed;
 
+    public static Todo of(Long id, String title, String content, boolean completed) {
+        return new Todo(id, title, content, completed);
+    }
 }
