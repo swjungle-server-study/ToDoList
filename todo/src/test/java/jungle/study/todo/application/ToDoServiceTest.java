@@ -7,7 +7,7 @@ import jungle.study.todo.domain.Category;
 import jungle.study.todo.domain.ToDo;
 import jungle.study.todo.domain.ToDoEssential;
 import jungle.study.todo.domain.exception.ToDoNotFoundException;
-import jungle.study.todo.domain.repository.ToDoRepository;
+import jungle.study.todo.domain.repository.ToDoInMemoryRepository;
 import jungle.study.todo.presentation.dto.request.CreateToDoReq;
 import jungle.study.todo.presentation.dto.request.ModifyToDoReq;
 import org.junit.jupiter.api.DisplayName;
@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class ToDoServiceTest {
 
     @Autowired
-    ToDoRepository toDoRepository;
+    ToDoInMemoryRepository toDoRepository;
 
     @Autowired
     ToDoCommandService toDoCommandService;

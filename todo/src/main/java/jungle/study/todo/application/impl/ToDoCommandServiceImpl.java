@@ -9,12 +9,14 @@ import jungle.study.todo.presentation.dto.request.CreateToDoReq;
 import jungle.study.todo.presentation.dto.request.ModifyToDoReq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ToDoCommandServiceImpl implements ToDoCommandService {
 
     private final ToDoRepository toDoRepository;
@@ -31,7 +33,7 @@ public class ToDoCommandServiceImpl implements ToDoCommandService {
                         now.getDayOfWeek())
         );
 
-        ToDo todo = toDoRepository.createToDo(toDo);
+        ToDo todo = toDoRepository.save(toDo);
         if (todo == null) {
             throw new ToDoNotFoundException();
         }
@@ -41,11 +43,14 @@ public class ToDoCommandServiceImpl implements ToDoCommandService {
 
     @Override
     public ToDo modifyToDoEssential(ModifyToDoReq modifyToDoReq) {
-        return toDoRepository.updateToDo(modifyToDoReq.uuid(), modifyToDoReq.title(), modifyToDoReq.contents(), modifyToDoReq.category());
+        ToDo toDo = toDoRepository.findByUuid(modifyToDoReq.uuid()).orElseThrow(ToDoNotFoundException::new);
+        toDo.modifyToDoEssential(modifyToDoReq.title(), modifyToDoReq.contents(), modifyToDoReq.category());
+        return toDo;
     }
 
     @Override
     public void deleteToDo(UUID uuid) {
-        toDoRepository.deleteToDo(uuid);
+        ToDo toDo = toDoRepository.findByUuid(uuid).orElseThrow(ToDoNotFoundException::new);
+        toDoRepository.delete(toDo);
     }
 }
