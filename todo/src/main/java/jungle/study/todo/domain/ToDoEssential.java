@@ -1,5 +1,7 @@
 package jungle.study.todo.domain;
 
+import jakarta.persistence.Embeddable;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -7,7 +9,8 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 @Getter
-@NoArgsConstructor
+@Embeddable
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ToDoEssential {
     private String title;
     private String contents;
