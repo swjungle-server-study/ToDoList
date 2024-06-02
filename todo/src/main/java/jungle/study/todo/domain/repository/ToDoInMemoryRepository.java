@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Repository
-public class ToDoRepository {
+public class ToDoInMemoryRepository {
     public AtomicInteger todoSeq = new AtomicInteger(1);
     ConcurrentHashMap<Integer, ToDo> todoDB = new ConcurrentHashMap<>();
 
