@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
@@ -22,4 +25,9 @@ public class TodoResponseDto {
         this.completed = todo.isCompleted();
     }
 
+    public static List<TodoResponseDto> valueOf(List<Todo> content) {
+        return content.stream()
+                .map(TodoResponseDto::new)
+                .collect(Collectors.toList());
+    }
 }
