@@ -13,11 +13,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TodoServiceTest {
@@ -54,4 +58,65 @@ class TodoServiceTest {
         verify(todoRepository, times(1)).save(any(Todo.class));
     }
 
+    @Test
+    @DisplayName("모든 Todo 조회 성공")
+    void getAllTodos() {
+        // given (준비)
+        given(todoRepository.findAll()).willReturn(List.of(todo));
+
+        // when (실행)
+        List<Todo> allTodos = todoService.getAllTodos();
+
+        // then (검증)
+        assertThat(allTodos).hasSize(1);
+        assertThat(allTodos.get(0)).isEqualTo(todo);
+    }
+
+    @Test
+    @DisplayName("Todo 조회 성공")
+    void getTodoById() {
+        // given (준비)
+        given(todoRepository.findById(1L)).willReturn(Optional.of(todo));
+
+        // when (실행)
+        Todo foundTodo = todoService.getTodoById(1L);
+
+        // then (검증)
+        assertThat(foundTodo).isEqualTo(todo);
+    }
+
+    @Test
+    @DisplayName("Todo 조회 실패 - TodoNotFoundException 발생")
+    void getTodoById_throwsException_whenTodoNotFound() {
+        given(todoRepository.findById(1L)).willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> todoService.getTodoById(1L))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage("Todo not found with id: 1");
+    }
+
+    @Test
+    @DisplayName("Todo 수정 성공")
+    void updateTodo() {
+        given(todoRepository.findById(1L)).willReturn(Optional.of(todo));
+        given(todoRepository.save(any(Todo.class))).willReturn(todo);
+
+        TodoResponseDto updatedTodoDto = todoService.updateTodo(1L, requestDto);
+
+        assertThat(updatedTodoDto.getTitle()).isEqualTo("Test Title");
+        verify(todoRepository, times(1)).save(any(Todo.class));
+    }
+
+    @Test
+    @DisplayName("Todo 삭제 성공")
+    void deleteTodo() {
+        // given (준비)
+        given(todoRepository.findById(1L)).willReturn(Optional.of(todo));
+
+        // when (실행)
+        todoService.deleteTodo(1L);
+
+        // then (검증)
+        verify(todoRepository, times(1)).deleteById(1L);
+    }
 }
