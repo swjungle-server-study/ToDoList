@@ -38,8 +38,13 @@ public class TodoServiceImpl implements TodoService{
     }
 
     @Override
-    public int updateTodo(Long todoId) {
-        return 0;
+    public Long updateTodo(Long todoId, TodoDto todoDto) {
+        Todo findTodo = todoRepository.findById(todoId);
+        if (findTodo == null) {
+            throw new ApiException(TodoErrorCode.TODO_NOT_FOUND);
+        }
+
+        return todoRepository.update(todoId, todoDto);
     }
 
     @Override
