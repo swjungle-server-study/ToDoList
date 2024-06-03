@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 class TodoServiceImplTest {
@@ -62,6 +63,17 @@ class TodoServiceImplTest {
 
     @Test
     void findTodoById() {
+        TodoDto todoDto = new TodoDto("testTitle", "testContents", TodoStatus.NOT_YET);
+
+        Todo todo = todoService.registerTodo(todoDto);
+        Todo findTodo = todoService.findTodoById(todo.getId());
+        assertThat(findTodo.getTitle()).isEqualTo(todo.getTitle());
+        assertThat(findTodo.getContents()).isEqualTo(todo.getContents());
+        assertThat(findTodo.getTodoStatus()).isEqualTo(todo.getTodoStatus());
+
+        assertThatThrownBy(() -> todoService.findTodoById(172893L))
+                .isInstanceOf(ApiException.class)
+                .hasFieldOrPropertyWithValue("errorCode", TodoErrorCode.TODO_NOT_FOUND);
     }
 
     @Test
