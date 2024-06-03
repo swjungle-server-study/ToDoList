@@ -11,7 +11,7 @@ public enum TodoErrorCode implements ErrorCode {
     TITLE_IS_EMPTY(HttpStatus.BAD_REQUEST, "title is empty"),
     CONTENTS_IS_EMPTY(HttpStatus.BAD_REQUEST, "contents is empty"),
     INVALID_STATUS_TODO(HttpStatus.FORBIDDEN, "status is invalid"),
-    TODO_NOT_FOUND(HttpStatus.NOT_FOUND, "todo {%s} is not found")
+    TODO_NOT_FOUND(HttpStatus.NOT_FOUND, "todo is not found")
     ;
 
     private final HttpStatus httpStatus;

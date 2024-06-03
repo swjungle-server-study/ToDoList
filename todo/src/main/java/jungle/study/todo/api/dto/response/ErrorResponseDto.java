@@ -6,12 +6,14 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.FieldError;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
 @RequiredArgsConstructor
+@Getter
 public class ErrorResponseDto {
-
+    private final LocalDateTime time = LocalDateTime.now();
     private final String code;
     private final String message;
 
@@ -22,7 +24,7 @@ public class ErrorResponseDto {
     @Builder
     @RequiredArgsConstructor
     public static class ValidationError{
-
+        private final LocalDateTime time = LocalDateTime.now();
         private final String field;
         private final String message;
 
