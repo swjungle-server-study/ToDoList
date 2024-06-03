@@ -52,4 +52,10 @@ public class ToDoController {
         toDoCommandService.deleteToDo(uuid);
         return ResponseEnvelope.of("delete todo");
     }
+
+    @PostMapping("/bulk")
+    public ResponseEnvelope<Boolean> bulkInsertToDo(List<CreateToDoReq> createToDoReqs) {
+        boolean bulkInsertResult = toDoCommandService.bulkInsertToDo(createToDoReqs);
+        return ResponseEnvelope.of(bulkInsertResult);
+    }
 }
