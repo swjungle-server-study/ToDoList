@@ -6,14 +6,14 @@ import jungle.study.todo.api.dto.TodoDto;
 import jungle.study.todo.api.errors.errorcode.TodoErrorCode;
 import jungle.study.todo.api.errors.exception.ApiException;
 import jungle.study.todo.api.repository.TodoRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.*;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 class TodoServiceImplTest {
@@ -101,5 +101,28 @@ class TodoServiceImplTest {
 
     @Test
     void findAll() {
+        List<Todo> beforeTestTodo = todoService.findAll();
+        if (!beforeTestTodo.isEmpty()) {
+            for (Todo todo:
+                 beforeTestTodo) {
+                todoService.deleteTodo(todo.getId());
+            }
+        }
+
+
+
+        TodoDto todoDto1 = new TodoDto("testTitle1", "testContents", TodoStatus.NOT_YET);
+        Todo todo1 = todoService.registerTodo(todoDto1);
+        TodoDto todoDto2 = new TodoDto("testTitle2", "testContents", TodoStatus.NOT_YET);
+        Todo todo2 = todoService.registerTodo(todoDto2);
+        TodoDto todoDto3 = new TodoDto("testTitle3", "testContents", TodoStatus.NOT_YET);
+        Todo todo3 = todoService.registerTodo(todoDto3);
+
+        List<Todo> allTodo = todoService.findAll();
+
+        assertThat(allTodo.size()).isEqualTo(3);
+        assertThat(todo1).isEqualTo(allTodo.get(0));
+        assertThat(todo2).isEqualTo(allTodo.get(1));
+        assertThat(todo3).isEqualTo(allTodo.get(2));
     }
 }
