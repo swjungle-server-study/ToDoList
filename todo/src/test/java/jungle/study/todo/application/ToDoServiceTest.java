@@ -7,9 +7,10 @@ import jungle.study.todo.domain.Category;
 import jungle.study.todo.domain.ToDo;
 import jungle.study.todo.domain.ToDoEssential;
 import jungle.study.todo.domain.exception.ToDoNotFoundException;
-import jungle.study.todo.domain.repository.ToDoInMemoryRepository;
+import jungle.study.todo.domain.repository.ToDoRepository;
 import jungle.study.todo.presentation.dto.request.CreateToDoReq;
 import jungle.study.todo.presentation.dto.request.ModifyToDoReq;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class ToDoServiceTest {
 
     @Autowired
-    ToDoInMemoryRepository toDoRepository;
+    ToDoRepository toDoRepository;
 
     @Autowired
     ToDoCommandService toDoCommandService;
@@ -40,17 +41,22 @@ public class ToDoServiceTest {
 
     String NOT_FOUND = "투두가 존재하지 않습니다";
 
+    @BeforeEach
+    public void setup() {
+        toDoRepository.deleteAll();
+    }
+
     @Test
     @DisplayName("투두 단건 생성 API DB 연결")
     public void createTodoConnectionOnRepository() {
         //given
         ToDo toDo = basicToDoResponse();
         //when
-        ToDo createdToDo = toDoRepository.createToDo(toDo);
+        ToDo createdToDo = toDoRepository.save(toDo);
 
         // then
         assertNotNull(createdToDo);
-        assertEquals(2, toDoRepository.todoSeq.get());
+        assertEquals(1, createdToDo.getId());
     }
 
     @Test
@@ -58,7 +64,7 @@ public class ToDoServiceTest {
     public void findTodoByUuId() {
         //given
         ToDo toDo = basicToDoResponse();
-        ToDo createToDo = toDoRepository.createToDo(toDo);
+        ToDo createToDo = toDoRepository.save(toDo);
         //when
         ToDo todo = toDoQueryService.findTodoByUuid(createToDo.getUuid());
         //then

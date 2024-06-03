@@ -15,4 +15,6 @@ public interface ToDoRepository extends Repository<ToDo, Long> {
     List<ToDo> findAll();
 
     void delete(ToDo toDo);
+
+    void deleteAll();
 }
