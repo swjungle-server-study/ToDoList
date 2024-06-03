@@ -1,5 +1,6 @@
 package jungle.study.todo;
 
+import jungle.study.todo.common.error.TodoNotFoundException;
 import jungle.study.todo.domain.Todo;
 import jungle.study.todo.dto.TodoRequestDto;
 import jungle.study.todo.dto.TodoResponseDto;
@@ -14,14 +15,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class TodoServiceTest {
@@ -91,7 +92,7 @@ class TodoServiceTest {
         given(todoRepository.findById(1L)).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> todoService.getTodoById(1L))
-                .isInstanceOf(NoSuchElementException.class)
+                .isInstanceOf(TodoNotFoundException.class)
                 .hasMessage("Todo not found with id: 1");
     }
 

@@ -48,7 +48,6 @@ class TodoControllerTest {
         responseDto = new TodoResponseDto(todo);
         objectMapper = new ObjectMapper();
     }
-
     @Test
     @DisplayName("Todo 생성 성공")
     void createTodo() throws Exception {
@@ -64,14 +63,13 @@ class TodoControllerTest {
 
         // then (검증)
         resultActions.andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(responseDto.getId()))
-                .andExpect(jsonPath("$.title").value(responseDto.getTitle()))
-                .andExpect(jsonPath("$.content").value(responseDto.getContent()))
-                .andExpect(jsonPath("$.completed").value(responseDto.isCompleted()));
+                .andExpect(jsonPath("$.data.id").value(responseDto.getId())) // EnvelopeResponseDto의 data 필드 접근
+                .andExpect(jsonPath("$.data.title").value(responseDto.getTitle()))
+                .andExpect(jsonPath("$.data.content").value(responseDto.getContent()))
+                .andExpect(jsonPath("$.data.completed").value(responseDto.isCompleted()));
 
         verify(todoService, times(1)).createTodo(any(TodoRequestDto.class));
     }
-
     @Test
     @DisplayName("모든 Todo 조회 성공")
     void getAllTodos() throws Exception {
@@ -84,11 +82,10 @@ class TodoControllerTest {
 
         // then (검증)
         resultActions.andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(responseDto.getId()))
-                .andExpect(jsonPath("$[0].title").value(responseDto.getTitle()))
-                .andExpect(jsonPath("$[0].content").value(responseDto.getContent()))
-                .andExpect(jsonPath("$.[0].completed").value(responseDto.isCompleted())); // completed 필드 접근 수정
-
+                .andExpect(jsonPath("$.data[0].id").value(responseDto.getId()))  // EnvelopeResponseDto의 data 필드 접근
+                .andExpect(jsonPath("$.data[0].title").value(responseDto.getTitle()))
+                .andExpect(jsonPath("$.data[0].content").value(responseDto.getContent()))
+                .andExpect(jsonPath("$.data[0].completed").value(responseDto.isCompleted()));
         verify(todoService, times(1)).getAllTodos();
     }
 
@@ -103,10 +100,10 @@ class TodoControllerTest {
 
         // then (검증)
         resultActions.andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(todo.getId()))
-                .andExpect(jsonPath("$.title").value(todo.getTitle()))
-                .andExpect(jsonPath("$.content").value(todo.getContent()))
-                .andExpect(jsonPath("$.completed").value(todo.isCompleted()));
+                .andExpect(jsonPath("$.data.id").value(responseDto.getId()))      // $.data 접근
+                .andExpect(jsonPath("$.data.title").value(responseDto.getTitle()))
+                .andExpect(jsonPath("$.data.content").value(responseDto.getContent()))
+                .andExpect(jsonPath("$.data.completed").value(responseDto.isCompleted()));
 
         verify(todoService, times(1)).getTodoById(todo.getId());
     }
@@ -130,11 +127,10 @@ class TodoControllerTest {
 
         // then (검증)
         resultActions.andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(updatedResponseDto.getId()))
-                .andExpect(jsonPath("$.title").value(updatedResponseDto.getTitle()))
-                .andExpect(jsonPath("$.content").value(updatedResponseDto.getContent()))
-                .andExpect(jsonPath("$.completed").value(updatedResponseDto.isCompleted()));
-
+                .andExpect(jsonPath("$.data.id").value(updatedResponseDto.getId())) // EnvelopeResponseDto의 data 필드 접근
+                .andExpect(jsonPath("$.data.title").value(updatedResponseDto.getTitle()))
+                .andExpect(jsonPath("$.data.content").value(updatedResponseDto.getContent()))
+                .andExpect(jsonPath("$.data.completed").value(updatedResponseDto.isCompleted()));
         verify(todoService, times(1)).updateTodo(eq(updatedTodo.getId()), any(TodoRequestDto.class));
     }
 
@@ -148,7 +144,8 @@ class TodoControllerTest {
         ResultActions resultActions = mockMvc.perform(delete("/api/todos/{id}", todo.getId()));
 
         // then (검증)
-        resultActions.andExpect(status().isNoContent());
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.data").value("TODO 삭제 성공")); // 메시지 검증 추가
         verify(todoService).deleteTodo(todo.getId());
     }
 }
