@@ -69,6 +69,19 @@ class TodoServiceImplTest {
 
     @Test
     void deleteTodo() {
+        TodoDto todoDto = new TodoDto("testTitle", "testContents", TodoStatus.NOT_YET);
+
+        Todo todo = todoService.registerTodo(todoDto);
+
+        Todo findTodo = todoService.findTodoById(todo.getId());
+        assertThat(findTodo).isNotNull();
+
+        Long isSuccess = todoService.deleteTodo(findTodo.getId());
+        assertThat(isSuccess).isGreaterThan(0);
+
+        assertThatThrownBy(() -> todoService.findTodoById(todo.getId()))
+                .isInstanceOf(ApiException.class)
+                .hasFieldOrPropertyWithValue("errorCode", TodoErrorCode.TODO_NOT_FOUND);
     }
 
     @Test
