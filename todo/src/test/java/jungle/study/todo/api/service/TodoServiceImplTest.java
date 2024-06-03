@@ -49,12 +49,22 @@ class TodoServiceImplTest {
     }
 
     @Test
-    @DisplayName("register null title  Todo test")
-    void registerNullTitleTodo() {
-    }
-
-    @Test
     void updateTodo() {
+        TodoDto todoDto = new TodoDto("testTitle", "testContents", TodoStatus.NOT_YET);
+
+        Todo todo = todoService.registerTodo(todoDto);
+
+        TodoDto modifyTodoDto = new TodoDto("modifyTitle", "modifyContents", TodoStatus.DONE);
+
+        Long isSuccess = todoService.updateTodo(todo.getId(), modifyTodoDto);
+
+        Todo modifiedTodo = todoService.findTodoById(todo.getId());
+
+        assertThat(isSuccess).isGreaterThan(0);
+        assertThat(modifiedTodo.getId()).isEqualTo(todo.getId());
+        assertThat(modifiedTodo.getTitle()).isEqualTo(modifyTodoDto.getTitle());
+        assertThat(modifiedTodo.getContents()).isEqualTo(modifyTodoDto.getContents());
+        assertThat(modifiedTodo.getTodoStatus()).isEqualTo(modifyTodoDto.getTodoStatus());
     }
 
     @Test
