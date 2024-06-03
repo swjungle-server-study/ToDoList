@@ -4,11 +4,12 @@ import jungle.study.todo.dto.EnvelopeResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.NoSuchElementException;
 
 @RestControllerAdvice // 모든 @RestController에 대한 예외 처리
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<EnvelopeResponseDto<String>> handleException(Exception ex) {
