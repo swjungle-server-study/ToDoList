@@ -69,6 +69,6 @@ public class TodoServiceImpl implements TodoService{
 
     @Override
     public List<Todo> findAll() {
-        return null;
+        return todoRepository.findAll();
     }
 }
