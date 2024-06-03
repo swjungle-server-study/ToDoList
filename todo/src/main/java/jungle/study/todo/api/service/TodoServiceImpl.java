@@ -48,8 +48,13 @@ public class TodoServiceImpl implements TodoService{
     }
 
     @Override
-    public int deleteTodo(Long todoId) {
-        return 0;
+    public Long deleteTodo(Long todoId) {
+        Todo findTodo = todoRepository.findById(todoId);
+        if (findTodo == null) {
+            throw new ApiException(TodoErrorCode.TODO_NOT_FOUND);
+        }
+
+        return todoRepository.delete(todoId);
     }
 
     @Override
