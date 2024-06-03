@@ -1,0 +1,70 @@
+package jungle.study.todo.api.service;
+
+import jungle.study.todo.api.domain.Todo;
+import jungle.study.todo.api.domain.TodoStatus;
+import jungle.study.todo.api.dto.TodoDto;
+import jungle.study.todo.api.errors.errorcode.TodoErrorCode;
+import jungle.study.todo.api.errors.exception.ApiException;
+import jungle.study.todo.api.repository.TodoRepository;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.assertj.core.api.Assertions.*;
+
+@SpringBootTest
+class TodoServiceImplTest {
+
+    private final TodoService todoService;
+
+
+    @Autowired
+    public TodoServiceImplTest(TodoService todoService, TodoRepository todoRepository) {
+        this.todoService = todoService;
+    }
+
+    @Test
+    @DisplayName("register Todo test")
+    void registerTodo() {
+        TodoDto todoDto = new TodoDto("testTitle", "testContents", TodoStatus.NOT_YET);
+        TodoDto titleBlankDto = new TodoDto(null, "testContents", TodoStatus.NOT_YET);
+        TodoDto contentsBlankDto = new TodoDto("testTitle", null, TodoStatus.NOT_YET);
+
+        Todo todo = todoService.registerTodo(todoDto);
+
+        assertThat(todo.getTitle()).isEqualTo("testTitle");
+        assertThat(todo.getContents()).isEqualTo("testContents");
+
+        assertThatThrownBy(() -> todoService.registerTodo(titleBlankDto))
+                .isInstanceOf(ApiException.class)
+                .hasFieldOrPropertyWithValue("errorCode", TodoErrorCode.TITLE_IS_EMPTY);
+
+        assertThatThrownBy(() -> todoService.registerTodo(contentsBlankDto))
+                .isInstanceOf(ApiException.class)
+                .hasFieldOrPropertyWithValue("errorCode", TodoErrorCode.CONTENTS_IS_EMPTY);
+
+    }
+
+    @Test
+    @DisplayName("register null title  Todo test")
+    void registerNullTitleTodo() {
+    }
+
+    @Test
+    void updateTodo() {
+    }
+
+    @Test
+    void deleteTodo() {
+    }
+
+    @Test
+    void findTodoById() {
+    }
+
+    @Test
+    void findAll() {
+    }
+}
