@@ -10,7 +10,7 @@ import java.util.List;
 public interface TodoService {
 
     Todo registerTodo(TodoDto todoDto);
-    int updateTodo(Long todoId);
+    int updateTodo(Long todoId, TodoDto todoDto);
     int deleteTodo(Long todoId);
     Todo findTodoById(Long todoId);
     List<Todo> findAll();
