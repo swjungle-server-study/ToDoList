@@ -5,7 +5,6 @@ import jungle.study.todo.api.domain.TodoStatus;
 import jungle.study.todo.api.dto.TodoDto;
 import jungle.study.todo.api.errors.errorcode.TodoErrorCode;
 import jungle.study.todo.api.errors.exception.ApiException;
-import jungle.study.todo.api.repository.TodoRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,7 @@ class TodoServiceImplTest {
 
 
     @Autowired
-    public TodoServiceImplTest(TodoService todoService, TodoRepository todoRepository) {
+    public TodoServiceImplTest(TodoService todoService) {
         this.todoService = todoService;
     }
 
