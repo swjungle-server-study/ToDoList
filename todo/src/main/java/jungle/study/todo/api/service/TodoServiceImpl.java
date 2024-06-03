@@ -49,7 +49,12 @@ public class TodoServiceImpl implements TodoService{
 
     @Override
     public Todo findTodoById(Long todoId) {
-        return null;
+        Todo findTodo = todoRepository.findById(todoId);
+
+        if (findTodo == null) {
+            throw new ApiException(TodoErrorCode.TODO_NOT_FOUND);
+        }
+        return findTodo;
     }
 
     @Override
