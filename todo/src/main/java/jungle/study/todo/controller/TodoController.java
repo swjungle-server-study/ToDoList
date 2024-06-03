@@ -1,6 +1,6 @@
 package jungle.study.todo.controller;
 
-import jungle.study.todo.domain.Todo;
+import jungle.study.todo.dto.EnvelopeResponseDto;
 import jungle.study.todo.dto.TodoRequestDto;
 import jungle.study.todo.dto.TodoResponseDto;
 import jungle.study.todo.service.TodoService;
@@ -20,30 +20,31 @@ public class TodoController {
     private final TodoService todoService;
 
     @PostMapping
-    public ResponseEntity<TodoResponseDto> createTodo(@RequestBody final TodoRequestDto requestDto) {
+    public ResponseEntity<EnvelopeResponseDto<TodoResponseDto>> createTodo(@RequestBody final TodoRequestDto requestDto) {
         TodoResponseDto createdTodoDto = todoService.createTodo(requestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdTodoDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(EnvelopeResponseDto.success(createdTodoDto));
     }
     @GetMapping
-    public ResponseEntity<List<TodoResponseDto>> getAllTodos() {
-        return ResponseEntity.ok(TodoResponseDto.valueOf(new ArrayList<>(todoService.getAllTodos())));
+    public ResponseEntity<EnvelopeResponseDto<List<TodoResponseDto>>> getAllTodos() {
+        List<TodoResponseDto> todoResponseDtos = TodoResponseDto.valueOf(new ArrayList<>(todoService.getAllTodos()));
+        return ResponseEntity.ok().body(EnvelopeResponseDto.success(todoResponseDtos));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TodoResponseDto> getTodo(@PathVariable Long id) {
-        Todo todo = todoService.getTodoById(id);
-        return ResponseEntity.ok(new TodoResponseDto(todo));
+    public ResponseEntity<EnvelopeResponseDto<TodoResponseDto>> getTodo(@PathVariable Long id) {
+        TodoResponseDto todoResponseDto = new TodoResponseDto(todoService.getTodoById(id));
+        return ResponseEntity.ok().body(EnvelopeResponseDto.success(todoResponseDto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TodoResponseDto> updateTodo(@PathVariable Long id, @RequestBody TodoRequestDto requestDto) {
+    public ResponseEntity<EnvelopeResponseDto<TodoResponseDto>> updateTodo(@PathVariable Long id, @RequestBody TodoRequestDto requestDto) {
         TodoResponseDto updatedTodo = todoService.updateTodo(id, requestDto);
-        return ResponseEntity.ok(updatedTodo);
+        return ResponseEntity.ok().body(EnvelopeResponseDto.success(updatedTodo));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTodo(@PathVariable Long id) {
+    public ResponseEntity<EnvelopeResponseDto<String>> deleteTodo(@PathVariable Long id) {
         todoService.deleteTodo(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body(EnvelopeResponseDto.success("TODO 삭제 성공"));
     }
 }
