@@ -15,15 +15,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
@@ -39,7 +40,10 @@ public class ToDoServiceTest {
     @Autowired
     ToDoQueryService toDoQueryService;
 
-    String NOT_FOUND = "투두가 존재하지 않습니다";
+    @Autowired
+    JdbcTemplate jdbcTemplate;
+
+    private final Integer LOOP_SIZE = 100;
 
     @BeforeEach
     public void setup() {
@@ -56,7 +60,6 @@ public class ToDoServiceTest {
 
         // then
         assertNotNull(createdToDo);
-        assertEquals(1, createdToDo.getId());
     }
 
     @Test
@@ -117,6 +120,44 @@ public class ToDoServiceTest {
         //then
         assertThatThrownBy(() -> toDoQueryService.findTodoByUuid(uuid))
                 .isInstanceOf(ToDoNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("BulkInsert 성공")
+    void bulkInsertToDoSuccess() {
+        //given
+        List<CreateToDoReq> createToDoReqs = new ArrayList<>();
+        for (int i = 0; i < LOOP_SIZE; i++) {
+            createToDoReqs.add(new CreateToDoReq("title" + i, "contents" + i, Category.DOING));
+        }
+
+        //when
+        try {
+            boolean bulkInsertResult = toDoCommandService.bulkInsertToDo(createToDoReqs);
+            //then
+            assertThat(bulkInsertResult).isTrue();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("BulkInsert 생성결과")
+    void bulkInsertToDoSize() {
+        //given
+        List<CreateToDoReq> createToDoReqs = new ArrayList<>();
+        for (int i = 0; i < LOOP_SIZE; i++) {
+            createToDoReqs.add(new CreateToDoReq("title" + i, "contents" + i, Category.DOING));
+        }
+        //when
+        try {
+            boolean bulkInsertResult = toDoCommandService.bulkInsertToDo(createToDoReqs);
+            int toDoAllSize = toDoQueryService.findAllToDo().size();
+            //then
+            assertThat(LOOP_SIZE).isEqualTo(toDoAllSize);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
 

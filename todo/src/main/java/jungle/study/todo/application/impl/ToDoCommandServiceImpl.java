@@ -63,8 +63,7 @@ public class ToDoCommandServiceImpl implements ToDoCommandService {
 
     @Override
     public boolean bulkInsertToDo(List<CreateToDoReq> createToDoReqs) {
-        String todoBulkSql = "INSERT INTO todos (title,contents,category,postDate,dayOfWeek" +
-                "VALUES(?,?,?,?,?)";
+        String todoBulkSql = "INSERT INTO todos (title,contents,category,postDate,dayOfWeek) VALUES(?,?,?,?,?)";
         int[] batchResult = jdbcTemplate.batchUpdate(todoBulkSql, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
