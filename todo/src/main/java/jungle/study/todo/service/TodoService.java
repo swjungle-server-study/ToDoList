@@ -23,9 +23,7 @@ public class TodoService {
                 todoDto.getContent() == null || todoDto.getContent().isBlank()) {
             throw new IllegalArgumentException("Title and content are required");
         }
-        long newId = sequence.getAndIncrement();
-        Todo newTodo = Todo.of(newId, todoDto.getTitle(), todoDto.getContent(), todoDto.isCompleted());
-        return new TodoResponseDto(todoRepository.save(newTodo));
+        return new TodoResponseDto(todoRepository.save(TodoRequestDto.toEntity(todoDto)));
     }
 
     public List<Todo> getAllTodos() {
