@@ -1,0 +1,124 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>TODO List</title>
+    <style>
+        .completed {
+            text-decoration: line-through;
+            color: gray;
+        }
+    </style>
+</head>
+<body>
+<h1>TODO List</h1>
+
+<div>
+    <input type="text" id="titleInput" placeholder="제목">
+    <input type="text" id="contentInput" placeholder="내용">
+    <button onclick="createTodo()">추가</button>
+</div>
+
+<div>
+    <input type="number" id="searchIdInput" placeholder="조회할 ID">
+    <button onclick="searchTodo()">검색</button>
+</div>
+
+<ul id="todoList"></ul>
+
+<script>
+    const todoList = document.getElementById('todoList');
+    const titleInput = document.getElementById('titleInput');
+    const contentInput = document.getElementById('contentInput');
+
+    // TODO 목록 불러오기
+    function loadTodos() {
+        fetch('/api/todos')
+            .then(response => response.json())
+            .then(data => {
+                todoList.innerHTML = ''; // 목록 초기화
+                data.data.forEach(todo => addTodoElement(todo)); // 응답 데이터에서 todo 리스트 추출
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // TODO 항목 검색
+    function searchTodo() {
+        const id = document.getElementById('searchIdInput').value;
+        fetch(`/api/todos/${id}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Todo not found');
+                }
+                return response.json();
+            })
+            .then(data => {
+                todoList.innerHTML = '';
+                addTodoElement(data.data); // 응답 데이터에서 todo 추출
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(error.message); // 에러 메시지 표시
+            });
+    }
+
+    // TODO 항목 추가
+    function createTodo() {
+        const title = titleInput.value;
+        const content = contentInput.value;
+
+        fetch('/api/todos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title, content, completed: false })
+        })
+            .then(() => {
+                titleInput.value = '';
+                contentInput.value = '';
+                loadTodos();
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // TODO 항목 표시
+    function addTodoElement(todo) {
+        const li = document.createElement('li');
+        li.id = `todo-${todo.id}`;
+        li.innerHTML = `
+                <input type="checkbox" ${todo.completed ? 'checked' : ''} onchange="toggleTodo(this, ${todo.id})">
+                <span class="${todo.completed ? 'completed' : ''}">${todo.title} - ${todo.content}</span>
+                <button onclick="deleteTodo(${todo.id})">삭제</button>
+            `;
+        todoList.appendChild(li);
+    }
+
+    // TODO 항목 완료/미완료 변경
+    function toggleTodo(checkbox, id) {
+        const li = checkbox.parentElement; // li 요소 가져오기
+        const titleSpan = li.querySelector('span'); // title과 content가 들어있는 span 요소 가져오기
+        const [title, content] = titleSpan.textContent.split(' - '); // title과 content 분리
+
+        const completed = checkbox.checked; // 완료 상태 가져오기
+
+        fetch(`/api/todos/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title, content, completed: true })
+        })
+            .then(() => loadTodos())
+            .catch(error => console.error('Error:', error));
+    }
+
+    // TODO 항목 삭제
+    function deleteTodo(id) {
+        fetch(`/api/todos/${id}`, { method: 'DELETE' })
+            .then(() => loadTodos())
+            .catch(error => console.error('Error:', error));
+    }
+
+    // 초기 로딩
+    loadTodos();
+</script>
+</body>
+</html>
