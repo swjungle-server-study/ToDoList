@@ -1,13 +1,16 @@
 package jungle.study.todo.service.impl;
 
 import jungle.study.todo.domain.Todo;
+import jungle.study.todo.dto.TodoDto;
+import jungle.study.todo.exception.ApiException;
+import jungle.study.todo.exception.ErrorCode;
 import jungle.study.todo.repository.TodoRepository;
 import jungle.study.todo.service.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TodoServiceImpl implements TodoService {
@@ -20,33 +23,43 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public Todo save(Todo todo) {
-        return todoRepository.insertTodo(todo);
+    public TodoDto saveTodo(TodoDto todoDto) {
+        Todo todo = todoRepository.insertTodo(new Todo(todoDto));
+        return new TodoDto(todo);
     }
 
     @Override
-    public Todo update(Long id, Todo todo) {
-        todoRepository.findById(id).map(t -> {
-            t.setTitle(todo.getTitle());
-            t.setContents(todo.getContents());
-            t.setStatus(todo.getStatus());
-            return t;
-        });
-        return todoRepository.updateTodo(todo);
+    public TodoDto updateTodo(Long id, TodoDto todoDto) {
+        Todo todo = todoRepository.findTodoById(id).map(t -> {
+            t.setTitle(todoDto.title());
+            t.setContents(todoDto.contents());
+            t.setStatus(todoDto.status());
+            return t;})
+                .orElseThrow(() -> new ApiException(ErrorCode.TODO_NOT_FOUND));
+        todoRepository.updateTodo(todo);
+        return new TodoDto(todo);
     }
 
     @Override
-    public boolean delete(Long id) {
+    public boolean deleteTodo(Long id) {
         return todoRepository.deleteTodo(id);
     }
 
     @Override
-    public List<Todo> findTodo() {
-        return todoRepository.findAll();
+    public List<TodoDto> findTodoAll() {
+        List<TodoDto> list = new ArrayList<>();
+
+        List<Todo> todoList = todoRepository.findTodoAll();
+        for (Todo todo : todoList) {
+            list.add(new TodoDto(todo));
+        }
+        return list;
     }
 
     @Override
-    public Optional<Todo> findTodoOne(Long TodoId) {
-        return todoRepository.findById(TodoId);
+    public TodoDto findTodoOne(Long id) {
+        Todo todo = todoRepository.findTodoById(id)
+                .orElseThrow(() -> new ApiException(ErrorCode.TODO_NOT_FOUND));
+        return new TodoDto(todo);
     }
 }

@@ -1,6 +1,8 @@
 package jungle.study.todo.repository;
 
 import jungle.study.todo.domain.Todo;
+import jungle.study.todo.exception.ApiException;
+import jungle.study.todo.exception.ErrorCode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +29,7 @@ public class MemoryTodoRepository implements TodoRepository{
             store.put(todo.getId(), todo);
             return todo;
         } else
-            return null; //여기 예외
+            throw new ApiException(ErrorCode.TODO_NOT_FOUND);
     }
 
     @Override
@@ -36,23 +38,23 @@ public class MemoryTodoRepository implements TodoRepository{
             store.remove(id);
             return true;
         } else
-            return false; //여기 예외
+            throw new ApiException(ErrorCode.TODO_NOT_FOUND);
     }
 
     @Override
-    public Optional<Todo> findById(Long id) {
+    public Optional<Todo> findTodoById(Long id) {
         return Optional.ofNullable(store.get(id));
     }
 
     @Override
-    public Optional<Todo> findByTitle(String title) {
+    public Optional<Todo> findTodoByTitle(String title) {
         return store.values().stream()
                 .filter(todo -> todo.getTitle().contains(title))
                 .findAny();
     }
 
     @Override
-    public List<Todo> findAll() {
+    public List<Todo> findTodoAll() {
         return new ArrayList<>(store.values());
     }
 

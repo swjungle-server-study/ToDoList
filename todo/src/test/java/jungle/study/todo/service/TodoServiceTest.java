@@ -2,6 +2,8 @@ package jungle.study.todo.service;
 
 import jungle.study.todo.domain.Status;
 import jungle.study.todo.domain.Todo;
+import jungle.study.todo.dto.TodoDto;
+import jungle.study.todo.exception.ApiException;
 import jungle.study.todo.repository.MemoryTodoRepository;
 import jungle.study.todo.service.impl.TodoServiceImpl;
 import org.junit.jupiter.api.AfterEach;
@@ -28,78 +30,61 @@ class TodoServiceTest {
     }
 
     @Test
-    void save() {
+    void saveTodo() {
         //given
         Todo todo = new Todo("title", "contents", Status.TODO);
 
         //when
-        long saveId = todoService.save(todo);
-        Todo findTodo = todoService.findTodoOne(saveId).get();
+        TodoDto saveTodoDto = todoService.saveTodo(new TodoDto(todo));
+        TodoDto findTodoDto = todoService.findTodoOne(saveTodoDto.id());
 
         //then
-        Assertions.assertEquals(todo, findTodo);
+        Assertions.assertEquals(saveTodoDto, findTodoDto);
     }
 
-//    @Test
-//    void 중복_회원_예외() {
-//        //given
-//        Todo todo1 = new Todo();
-//        todo1.setName("spring");
-//
-//        Todo todo2 = new Todo();
-//        todo2.setName("spring");
-//
-//        //when
-//        todoService.join(todo1);
-////        try {
-////            todoService.join(todo2);
-////            fail("예외가 발생해야 합니다.");
-////        } catch (IllegalStateException e) {
-////            Assertions.assertEquals(e.getMessage(), "이미 존재하는 회원입니다.");
-////        }
-//        IllegalStateException e = assertThrows(IllegalStateException.class, () -> todoService.join(todo2));
-//        Assertions.assertEquals(e.getMessage(), "이미 존재하는 회원입니다.");
-//
-//        //then
-//    }
-
     @Test
-    void update() {
+    void updateTodo() {
         Todo todo = new Todo("title", "contents", Status.TODO);
-        todoService.save(todo);
+        TodoDto saveTodoDto = todoService.saveTodo(new TodoDto(todo));
 
         todo.setContents("update contents");
-        todoService.update(todo);
+        TodoDto updateTodoDto = todoService.updateTodo(saveTodoDto.id(), new TodoDto(todo));
 
-        Todo findTodo = todoService.findTodoOne(todo.getId()).get();
-
-        Assertions.assertEquals(todo.getContents(), findTodo.getContents());
+        Assertions.assertEquals("update contents", updateTodoDto.contents());
     }
 
     @Test
-    void delete() {
+    void deleteTodo() {
         Todo todo = new Todo("title", "contents", Status.TODO);
-        todoService.save(todo);
+        TodoDto saveTodoDto = todoService.saveTodo(new TodoDto(todo));
 
-        todoService.delete(todo);
+        todoService.deleteTodo(saveTodoDto.id());
 
-        Assertions.assertTrue(todoService.findTodoOne(todo.getId()).isEmpty());
+        Assertions.assertThrows(ApiException.class, () -> {
+            todoService.findTodoOne(saveTodoDto.id());
+        });
     }
 
     @Test
-    void findTodo() {
+    void findTodoAll() {
         Todo todo1 = new Todo("title1", "contents1", Status.TODO);
-        todoService.save(todo1);
+        TodoDto saveTodoDto1 = todoService.saveTodo(new TodoDto(todo1));
 
         Todo todo2 = new Todo("title2", "contents2", Status.DONE);
-        todoService.save(todo2);
+        TodoDto saveTodoDto2 = todoService.saveTodo(new TodoDto(todo2));
 
-        List<Todo> result = todoService.findTodo();
+        List<TodoDto> result = todoService.findTodoAll();
 
         Assertions.assertEquals(result.size(), 2);
     }
 
     @Test
     void findTodoOne() {
+        Todo todo = new Todo("title", "contents", Status.TODO);
+        TodoDto saveTodoDto = todoService.saveTodo(new TodoDto(todo));
+
+        TodoDto findTodoDto = todoService.findTodoOne(saveTodoDto.id());
+
+        Assertions.assertEquals(saveTodoDto, findTodoDto);
     }
 }

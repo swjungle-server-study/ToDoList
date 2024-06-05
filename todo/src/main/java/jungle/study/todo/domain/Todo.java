@@ -1,5 +1,13 @@
 package jungle.study.todo.domain;
 
+import jungle.study.todo.dto.TodoDto;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
 public class Todo {
     private Long id;
     private String title;
@@ -12,35 +20,9 @@ public class Todo {
         this.status = status;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContents() {
-        return contents;
-    }
-
-    public void setContents(String contents) {
-        this.contents = contents;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
+    public Todo(TodoDto todoDto) {
+        this.title = todoDto.title();
+        this.contents = todoDto.contents();
+        this.status = todoDto.status();
     }
 }

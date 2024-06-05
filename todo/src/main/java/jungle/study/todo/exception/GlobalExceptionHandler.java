@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(CustomException.class)
-    public void customExceptionHandler(CustomException e) {
-        throw new CustomException(e.getErrorCode());
+    @ExceptionHandler(ApiException.class)
+    public void customExceptionHandler(ApiException e) {
+        throw new ApiException(e.getErrorCode());
     }
 }

@@ -22,7 +22,7 @@ class MemoryTodoRepositoryTest {
 
         repository.insertTodo(todo);
 
-        Todo result = repository.findById(todo.getId()).get();
+        Todo result = repository.findTodoById(todo.getId()).get();
         Assertions.assertEquals(todo, result);
     }
 
@@ -35,7 +35,7 @@ class MemoryTodoRepositoryTest {
         todo.setStatus(Status.DONE);
         repository.updateTodo(todo);
 
-        Todo result = repository.findById(todo.getId()).get();
+        Todo result = repository.findTodoById(todo.getId()).get();
         Assertions.assertEquals(todo.getTitle(), result.getTitle());
         Assertions.assertEquals(todo.getStatus(), result.getStatus());
     }
@@ -45,20 +45,20 @@ class MemoryTodoRepositoryTest {
         Todo todo = new Todo("title", "contents", Status.TODO);
         repository.insertTodo(todo);
 
-        repository.deleteTodo(todo);
+        repository.deleteTodo(todo.getId());
 
-        Assertions.assertTrue(repository.findById(todo.getId()).isEmpty());
+        Assertions.assertTrue(repository.findTodoById(todo.getId()).isEmpty());
     }
 
     @Test
-    public void findById() {
+    public void findTodoById() {
         Todo todo1 = new Todo("title1", "contents1", Status.TODO);
         repository.insertTodo(todo1);
 
         Todo todo2 = new Todo("title2", "contents2", Status.DONE);
         repository.insertTodo(todo2);
 
-        Todo result = repository.findById(todo1.getId()).get();
+        Todo result = repository.findTodoById(todo1.getId()).get();
 
         Assertions.assertEquals(todo1, result);
     }
@@ -71,7 +71,7 @@ class MemoryTodoRepositoryTest {
         Todo todo2 = new Todo("title2", "contents2", Status.DONE);
         repository.insertTodo(todo2);
 
-        Todo result = repository.findByTitle("title1").get();
+        Todo result = repository.findTodoByTitle("title1").get();
 
         Assertions.assertEquals(todo1, result);
     }
@@ -84,7 +84,7 @@ class MemoryTodoRepositoryTest {
         Todo todo2 = new Todo("title2", "contents2", Status.DONE);
         repository.insertTodo(todo2);
 
-        List<Todo> result = repository.findAll();
+        List<Todo> result = repository.findTodoAll();
 
         Assertions.assertEquals(result.size(), 2);
     }

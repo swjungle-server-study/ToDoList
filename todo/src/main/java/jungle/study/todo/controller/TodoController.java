@@ -1,6 +1,5 @@
 package jungle.study.todo.controller;
 
-import jungle.study.todo.domain.Todo;
 import jungle.study.todo.dto.ResponseEnvelope;
 import jungle.study.todo.dto.TodoDto;
 import jungle.study.todo.service.impl.TodoServiceImpl;
@@ -10,10 +9,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/api/todo")
+@RequestMapping("/api")
 public class TodoController {
     private final TodoServiceImpl todoService;
 
@@ -23,57 +21,36 @@ public class TodoController {
     }
 
     @GetMapping
-    public ResponseEntity<ResponseEnvelope<List<TodoDto>>> getAllTodos() {
-        List<TodoDto> todos = todoService.findTodo().stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(new ResponseEnvelope<>(null, todos, "Todos fetched successfully"));
+    public ResponseEntity<ResponseEnvelope<List<TodoDto>>> getTodos() {
+        List<TodoDto> todoList = todoService.findTodoAll();
+        return ResponseEntity.ok(new ResponseEnvelope<>(null, todoList, "TodoList fetched successfully"));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/todo/{id}")
     public ResponseEntity<ResponseEnvelope<TodoDto>> getTodoById(@PathVariable Long id) {
-        return todoService.findTodoOne(id)
-                .map(todo -> ResponseEntity.ok(new ResponseEnvelope<>(null, convertToDTO(todo), "Todo fetched successfully")))
-                .orElse(ResponseEntity.status(404).body(new ResponseEnvelope<>("404", null, "Todo not found")));
+        TodoDto findTodo = todoService.findTodoOne(id);
+        return ResponseEntity.ok(new ResponseEnvelope<>(null, findTodo, "Todo fetched successfully"));
     }
 
-    @PostMapping
-    public ResponseEntity<ResponseEnvelope<TodoDto>> addTodoItem(@RequestBody TodoDto todoDto) {
-        Todo newTodo = todoService.save(convertToEntity(todoDto));
-        return ResponseEntity.status(201).body(new ResponseEnvelope<>(null, convertToDTO(newTodo), "Todo created successfully"));
+    @PostMapping("/todo")
+    public ResponseEntity<ResponseEnvelope<TodoDto>> saveTodo(@RequestBody TodoDto todoDto) {
+        TodoDto newTodo = todoService.saveTodo(todoDto);
+        return ResponseEntity.status(201).body(new ResponseEnvelope<>(null, newTodo, "Todo created successfully"));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseEnvelope<TodoDto>> updateTodoItem(@PathVariable Long id, @RequestBody TodoDto todoDto) {
-        try {
-            Todo updatedTodo = todoService.update(id, convertToEntity(todoDto));
-            ResponseEnvelope<TodoDto> response = new ResponseEnvelope<>(null, convertToDTO(updatedTodo), "Todo updated successfully");
-            return ResponseEntity.ok(response);
-        } catch (Exception ex) {
-            return ResponseEntity.status(404).body(new ResponseEnvelope<>("404", null, "Todo not found"));
-        }
+    public ResponseEntity<ResponseEnvelope<TodoDto>> updateTodo(@PathVariable Long id, @RequestBody TodoDto todoDto) {
+        TodoDto updateTodo = todoService.updateTodo(id, todoDto);
+        return ResponseEntity.ok(new ResponseEnvelope<>(null, updateTodo, "Todo updated successfully"));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseEnvelope<Void>> deleteTodoItem(@PathVariable Long id) {
-        boolean deleted = todoService.delete(id);
+    public ResponseEntity<ResponseEnvelope<Void>> deleteTodo(@PathVariable Long id) {
+        boolean deleted = todoService.deleteTodo(id);
         if (deleted) {
             return ResponseEntity.ok(new ResponseEnvelope<>(null, null, "Todo deleted successfully"));
         } else {
             return ResponseEntity.status(404).body(new ResponseEnvelope<>("404", null, "Todo not found"));
         }
-    }
-
-    private TodoDto convertToDTO(Todo todo) {
-        TodoDto dto = new TodoDto();
-        dto.setId(todo.getId());
-        dto.setTitle(todo.getTitle());
-        dto.setStatus(todo.getStatus());
-        return dto;
-    }
-
-    private Todo convertToEntity(TodoDto dto) {
-        Todo todo = new Todo(dto.getTitle(), dto.getContents(), dto.getStatus());
-        return todo;
     }
 }

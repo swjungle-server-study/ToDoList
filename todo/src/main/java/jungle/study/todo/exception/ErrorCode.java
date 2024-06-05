@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ErrorCode {
 
-    USERNAME_NOT_FOUND(HttpStatus.NOT_FOUND,"유저 정보가 존재하지 않습니다."),
     USERNAME_ALREADY_EXISTS(HttpStatus.BAD_REQUEST,"이미 존재하는 아이디입니다."),
     TOKEN_NOT_FOUND(HttpStatus.BAD_REQUEST,"잘못된 접근 입니다."),
     TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED,"토큰이 만료되었습니다."),
@@ -20,7 +19,9 @@ public enum ErrorCode {
     RE_LOGIN_REQUIRED(HttpStatus.UNAUTHORIZED,"인증 만료. 다시 로그인 해주시기 바랍니다."),
     PASSWORD_ERROR(HttpStatus.BAD_REQUEST,"비밀번호가 올바르지 않습니다."),
     NEW_PASSWORD_NOT_CORRECT(HttpStatus.BAD_REQUEST,"새 비밀번호를 다시 확인해주세요."),
-    EMAIL_ALREADY_EXISTS(HttpStatus.BAD_REQUEST,"해당 E-mail 은 이미 사용중입니다.");
+    EMAIL_ALREADY_EXISTS(HttpStatus.BAD_REQUEST,"해당 E-mail 은 이미 사용중입니다."),
+
+    TODO_NOT_FOUND(HttpStatus.NOT_FOUND, "todo is not found");
 
     private HttpStatus httpStatus;
     private String message;

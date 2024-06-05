@@ -9,7 +9,7 @@ public interface TodoRepository {
     Todo insertTodo(Todo todo);
     Todo updateTodo(Todo todo);
     boolean deleteTodo(long id);
-    Optional<Todo> findById(Long id);
-    Optional<Todo> findByTitle(String name);
-    List<Todo> findAll();
+    Optional<Todo> findTodoById(Long id);
+    Optional<Todo> findTodoByTitle(String name);
+    List<Todo> findTodoAll();
 }

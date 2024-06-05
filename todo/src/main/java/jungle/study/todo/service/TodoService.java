@@ -1,13 +1,13 @@
 package jungle.study.todo.service;
 
-import jungle.study.todo.domain.Todo;
+import jungle.study.todo.dto.TodoDto;
+
 import java.util.List;
-import java.util.Optional;
 
 public interface TodoService {
-    Todo save(Todo todo);
-    Todo update(Long id, Todo todo);
-    boolean delete(Long id);
-    List<Todo> findTodo();
-    Optional<Todo> findTodoOne(Long TodoId);
+    TodoDto saveTodo(TodoDto todo);
+    TodoDto updateTodo(Long id, TodoDto todo);
+    boolean deleteTodo(Long id);
+    List<TodoDto> findTodoAll();
+    TodoDto findTodoOne(Long id);
 }
